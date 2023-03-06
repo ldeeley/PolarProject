@@ -1,0 +1,13 @@
+DELETE FROM book;
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","12345",10.00,"hello",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("littleElge","67890",10.00,"bookiscalled",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","11111",10.00,"its a funny title",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","14445",10.00,"hello",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("littleElge","65590",10.00,"bookiscalled",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","16611",10.00,"its a funny title",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","17745",10.00,"hello",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("littleElge","68890",10.00,"bookiscalled",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","19911",10.00,"its a funny title",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","10045",10.00,"hello",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("littleElge","61190",10.00,"bookiscalled",12.00);
+INSERT INTO book ( author, isbn, retail_price, title, wholesale_price) VALUES ("authorLester","12211",10.00,"its a funny title",12.00);
