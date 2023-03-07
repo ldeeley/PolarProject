@@ -1,5 +1,7 @@
 package com.example.polarcatalogservice;
 
+import capital.scalable.restdocs.AutoDocumentation;
+import capital.scalable.restdocs.jackson.JacksonResultHandlers;
 import com.example.polarcatalogservice.dto.BookRequest;
 import com.example.polarcatalogservice.dto.BookResponse;
 import com.example.polarcatalogservice.model.Book;
@@ -25,6 +27,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
+import org.springframework.restdocs.cli.CliDocumentation;
+import org.springframework.restdocs.http.HttpDocumentation;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -32,6 +36,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -80,16 +85,37 @@ public class PolarProjectApplicationJPATests {
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentationContextProvider){
         this.mockMvc = MockMvcBuilders
                 .webAppContextSetup(webApplicationContext)
-                .apply(documentationConfiguration(restDocumentationContextProvider))
+                .alwaysDo(JacksonResultHandlers.prepareJackson(objectMapper))
+                .apply(documentationConfiguration(restDocumentationContextProvider)
+                        .uris()
+                        .withScheme("http")
+                        .withHost("demo.mima.com")
+                        .withPort(443)
+                        .and().snippets()
+                        .withDefaults(CliDocumentation.curlRequest(),
+                                HttpDocumentation.httpRequest(),
+                                HttpDocumentation.httpResponse(),
+                                AutoDocumentation.requestFields(),
+                                AutoDocumentation.responseFields(),
+                                AutoDocumentation.pathParameters(),
+                                AutoDocumentation.requestParameters(),
+                                AutoDocumentation.description(),
+                                AutoDocumentation.methodAndPath(),
+                                AutoDocumentation.section()))
+                .alwaysDo(document("{class-name}/{method-name}",
+                        preprocessRequest(prettyPrint()),preprocessResponse(prettyPrint())))
                 .build();
     }
 
 
     @Test
     @Sql("/testScripts/init.sql")
-    void contextLoads(){
-        List<Book> result = bookRepository.findAll();
-        assertEquals(12,result.size());
+    void getAllBooksInTheCatalog() throws Exception {
+//        List<Book> result = bookRepository.findAll();
+        mockMvc.perform(MockMvcRequestBuilders.get("/books")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(12));
     }
 
     @Test
@@ -102,12 +128,9 @@ public class PolarProjectApplicationJPATests {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/books")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(bookRequestString)).andDo(print())
+                .content(bookRequestString))
                 .andExpect(status().isCreated())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
-        assertEquals(13, bookRepository.findAll().size());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(4));
     }
 
     private BookRequest getBookRequest() {
@@ -130,18 +153,12 @@ public class PolarProjectApplicationJPATests {
                 .post("/books")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(bookRequestString)).andDo(print())
-                        .andExpect(status().isCreated())
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())));
+                        .andExpect(status().isCreated());
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/books")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(bookRequestString))
-                .andExpect(status().isUnprocessableEntity())
-                .andDo(document("{methodName}",
-                preprocessRequest(prettyPrint()),
-                preprocessResponse(prettyPrint())));
+                .andExpect(status().isUnprocessableEntity());
         assertEquals(13 , bookRepository.findAll().size());
     }
 
@@ -153,9 +170,6 @@ public class PolarProjectApplicationJPATests {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/books/12345")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andDo(document("{methodName}",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.isbn").value("12345")).andDo(document("{methodName}"));
 

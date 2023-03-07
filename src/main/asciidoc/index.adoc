@@ -3,27 +3,12 @@
 This is an example output for a service running at http://localhost:8080:
 
 
-GET book for a given ISBN number
+include::{snippets}/polar-project-application-jpa-tests/get-all-books-in-the-catalog/auto-section.adoc[]
 
-.request
-include::{snippets}/getBookForGivenISBN/http-request.adoc[]
+include::{snippets}/polar-project-application-jpa-tests/get-book-for-given-isbn/auto-section.adoc[]
 
-.response
-include::{snippets}/getBookForGivenISBN/http-response.adoc[]
+include::{snippets}/polar-project-application-jpa-tests/posting-book-duplicate-prevented/auto-section.adoc[]
 
-POST book that already exists in Catalog is rejected
+include::{snippets}/polar-project-application-jpa-tests/should-add-book-to-catalog/auto-section.adoc[]
 
-.request
-include::{snippets}/postingBookDuplicatePrevented/http-request.adoc[]
-
-.response
-include::{snippets}/postingBookDuplicatePrevented/http-response.adoc[]
-
-POST book to Catalog
-
-.request
-include::{snippets}/shouldAddBookToCatalog/http-request.adoc[]
-
-.response
-include::{snippets}/shouldAddBookToCatalog/http-response.adoc[]
 As you can see the format is very simple, and in fact you always get the same message.
