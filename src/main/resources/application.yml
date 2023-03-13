@@ -3,8 +3,8 @@ spring:
     name: polarproject
   datasource:
     url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/polarproject
-    username: root
-    password: DivSQLorce2014#
+    username: user
+    password: password
 #    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
   jpa:
     hibernate:
